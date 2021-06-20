@@ -5,9 +5,8 @@ from datetime import timedelta
 
 def relative_date_to_timedelta(date: str) -> timedelta:
     """
-    handles absolute and relative dates and returns
-    the datetime object with current time adding the
-    given relative value
+    handles relative dates and returns the timedelta
+    object with current time adding the given relative value
     """
     relative_pattern = re.compile('\d*[hms]{1}', re.IGNORECASE)
     if relative_pattern.match(date):

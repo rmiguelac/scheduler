@@ -1,3 +1,6 @@
 bin/
 lib/
 challenge.txt
+.vscode
+**/__pycache__
+pyvenv.cfg
