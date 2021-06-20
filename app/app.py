@@ -34,7 +34,12 @@ class JobsHandler(tornado.web.RequestHandler):
 
 class JobDetailHandler(tornado.web.RequestHandler):
     def get(self, job_id):
-        self.write(SCHEDULED_JOBS[job_id])
+        if job_id in SCHEDULED_JOBS.keys():
+            self.write(SCHEDULED_JOBS[job_id])
+        elif job_id in RUNNING_JOBS.keys():
+            self.write(RUNNING_JOBS[job_id])
+        else:
+            self.write(JOB_HISTORY[job_id])
 
 async def schedule_job(job_name: str, date: str):
     random_id = uuid.uuid4().hex
@@ -43,23 +48,27 @@ async def schedule_job(job_name: str, date: str):
         "id": random_id,
         "job_name": job_name,
         "scheduled_in": now.strftime(DATE_FORMAT),
-        "scheduled_to": (now + strdate_to_datetime(date)).strftime(DATE_FORMAT)
+        "scheduled_to": (now + strdate_to_datetime(date)).strftime(DATE_FORMAT),
+        "status": "scheduled"
     }
     run_time_timestamp = (now + strdate_to_datetime(date)).timestamp()
     tornado.ioloop.IOLoop.instance().call_at(callback=runjob, job_id=random_id, job_name=job_name, when=run_time_timestamp)
 
-async def runjob(job_name: str, job_id: str):
+def runjob(job_name: str, job_id: str):
     delayed_args = partial(delayed, job_name, job_id)
     tornado.ioloop.IOLoop.instance().run_in_executor(None, delayed_args)
 
 def delayed(job_name: str, job_id: str):
     running_job = SCHEDULED_JOBS.pop(job_id)
     RUNNING_JOBS[job_id] = running_job
+    RUNNING_JOBS[job_id]["status"] = "running"
     sleep(15)
     print(job_name)
     ran_job = RUNNING_JOBS.pop(job_id)
     JOB_HISTORY[job_id] = ran_job
-    JOB_HISTORY[job_id]['status'] = 'success'
+    JOB_HISTORY[job_id]['finish_status'] = 'success'
+    JOB_HISTORY[job_id]['finish_date'] = datetime.fromtimestamp(ttime()).strftime(DATE_FORMAT)
+    JOB_HISTORY[job_id]['status'] = 'finished'
 
 def strdate_to_datetime(date: str) -> timedelta:
     """
