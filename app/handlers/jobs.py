@@ -27,6 +27,7 @@ class JobsHandler(tornado.web.RequestHandler):
         }
         self.write(jobs)
 
+class JobSchedulerHandler(tornado.web.RequestHandler):
     async def post(self):
         """
         tags:

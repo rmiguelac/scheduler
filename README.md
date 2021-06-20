@@ -56,7 +56,7 @@ Once the application is up and running, the following endpoints are exposed:
     }
     ```
 
-- **POST /jobs**  
+- **POST /job**  
     summary: show details of a single job  
     parameters:  
         - ```job_name```: job/image to run  
