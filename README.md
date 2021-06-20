@@ -17,8 +17,8 @@ Since we have jobs that can be in the running state or in scheduled state, as we
 ## **Using**
 Once the application is up and running, the following endpoints are exposed:
 
-- **/ (GET)**    
-    summary: Will redirect to /jobs  
+- **GET /**    
+    summary: redirects to /jobs  
     example call: ```curl --location --request GET 'localhost:8888/jobs'```  
     example response:  
     ```json
@@ -36,7 +36,7 @@ Once the application is up and running, the following endpoints are exposed:
         "history": {}
     }
     ```
-- **/jobs (GET)**    
+- **GET /jobs**    
     summary: list all jobs, them being in ```running```, ```scheduled``` state or in the ```history``` if it finishes or is deleted from the schedule.  
     example call: ```curl --location --request GET 'localhost:8888/job/38c24e78de0646b2a7348cfa6fc2035c'```  
     example response:  
@@ -56,7 +56,7 @@ Once the application is up and running, the following endpoints are exposed:
     }
     ```
 
-- **/jobs (POST)**  
+- **POST /jobs**  
     summary: show details of a single job  
     parameters:  
         - ```job_name```: job/image to run  
@@ -70,7 +70,7 @@ Once the application is up and running, the following endpoints are exposed:
     }
     ```
 
-- **/job (DELETE)**
+- **DELETE /job**
     summary: delete a scheduled job (de-schedule it)  
     parameters:  
         - ```job_id```    
