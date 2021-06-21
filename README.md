@@ -1,7 +1,8 @@
 # **Scheduler**
 
-Scheduler is an API developed with python's web framework [tornado](https://www.tornadoweb.org/en/stable/) which makes easy to handle async and non-blocking network I/O.  
-Since scheduler should be a production-grade code, no blocking calls should happen, allowing for multiple jobs to run/be scheduled at the same time.  
+**Scheduler** is a simple async API to schedule docker-based jobs.
+
+Scheduler allows the end-user to schedule jobs by its name at a relative or absolute time
 
 ## **Design Decisions**
 
@@ -18,9 +19,10 @@ Since we have jobs that can be in the running state or in scheduled state, as we
 Once the application is up and running, the following endpoints are exposed:
 
 - **GET /**    
-    summary: redirects to /jobs  
-    example call: ```curl --location --request GET 'localhost:8888/jobs'```  
-    example response:  
+    **summary:** redirects to /jobs  
+    **returns:** ```application/json```
+    **example call:** ```curl --location --request GET 'localhost:8888/jobs'```  
+    **example response:**  
     ```json
     {
         "running": {},
@@ -37,9 +39,10 @@ Once the application is up and running, the following endpoints are exposed:
     }
     ```
 - **GET /jobs**    
-    summary: list all jobs, them being in ```running```, ```scheduled``` state or in the ```history``` if it finishes or is deleted from the schedule.  
-    example call: ```curl --location --request GET 'localhost:8888/job/38c24e78de0646b2a7348cfa6fc2035c'```  
-    example response:  
+    **summary:** list all jobs, them being in ```running```, ```scheduled``` state or in the ```history``` if it finishes or is deleted from the schedule.  
+    **returns:** ```application/json```  
+    **example call:** ```curl --location --request GET 'localhost:8888/job/38c24e78de0646b2a7348cfa6fc2035c'```  
+    **example response:**  
     ```json
     {
         "running": {},
@@ -56,27 +59,58 @@ Once the application is up and running, the following endpoints are exposed:
     }
     ```
 
-- **POST /job**  
-    summary: show details of a single job  
-    parameters:  
-        - ```job_name```: job/image to run  
-        - ```date```: relative or absolute date to schedule job to run  
-    returns: ```application/json```  
-    example call: ```curl --location --request POST 'localhost:8888/job' --form 'job_name="JOB_A"' --form 'date="30s"'```  
-    example response:  
+- **GET /job**  
+    **summary:** get job details
+    **returns:** ```application/json```  
+    **parameters:**  
+        - ```job_id```: job id
+    **example call:** ```curl --location --request GET 'localhost:8888/job/8b2a719840f643cf9f657d1c1af78955'```  
+    **example response:**    
     ```json
     {
-        "message": "job JOB_A with id 71f6696c08a64a45b3788332e0dc5278 will be scheduled to run in 30s"
+        "id": "8b2a719840f643cf9f657d1c1af78955",
+        "job_name": "JOB_ABSOLUTE",
+        "scheduled_in": "20-06-2021 16:12:19",
+        "scheduled_to": "20-06-2021 16:13:00",
+        "status": "scheduled"
+    }
+    ```
+
+- **POST /job**  
+    **summary:** schedule a single job to run at a given time.  
+    **long description:** Given a job, schedule it at a given time where the date can be given in two forms: relative (30s, 2m, 1h, 4d, always round and not 2h30m) or absolute in the "%d-%m-%Y %H:%M:%S" date format, for example "20-06-2021 20:00:00"  
+    **returns:** ```application/json```  
+    **parameters:**  
+        - ```job_name```: job/image to run  
+        - ```date```: absolute date to schedule job to run  _OR_ ```time```: for relative time schedule.  
+    **example call (relative date):** ```curl --location --request POST 'localhost:8888/job' --form 'job_name="JOB_B"' --form 'time="2m"'```  
+    **example response (relative date):**    
+    ```json
+    {
+        "message": "job JOB_B with id affae502278b44cf95ea4bd7ad9e6265 will be scheduled to run in 2m"
+    }
+    ```
+        
+    **example call (absolute date):** ```curl --location --request POST 'localhost:8888/job' --form 'job_name="JOB_ABSOLUTE"' --form 'date="20-06-2021 16:13:00"'```  
+    **example response (absolute date):**  
+    ```json
+    {
+        "message": "job JOB_ABSOLUTE with id 8b2a719840f643cf9f657d1c1af78955 will be scheduled to run in 20-06-2021 16:13:00"
     }
     ```
 
 - **DELETE /job**
-    summary: delete a scheduled job (de-schedule it)  
-    parameters:  
-        - ```job_id```    
-    returns: ```application/json```  
-    example call: ```curl --location --request DELETE 'localhost:8888/job/15a3e3387c2f44eb89cc62099046353a'```  
-    example response:  
+    **summary:** delete a scheduled job (de-schedule it)  
+    **parameters:**  
+        - ```job_id```: job id  
+    **returns:** ```application/json```  
+    **example call:** ```curl --location --request DELETE 'localhost:8888/job/6bfde86edc8c4edf91eec8ef70c90a45'```  
+    **example response:**  
+    ```json
+    {
+        "message": "job 6bfde86edc8c4edf91eec8ef70c90a45 was de-scheduled"
+    }
+    ```
 
 ## **Testing**
 

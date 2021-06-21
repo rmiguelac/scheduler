@@ -61,8 +61,12 @@ class JobDetailHandler(tornado.web.RequestHandler):
             self.write(SCHEDULED_JOBS[job_id])
         elif job_id in RUNNING_JOBS.keys():
             self.write(RUNNING_JOBS[job_id])
-        else:
+        elif job_id in JOB_HISTORY.keys():
             self.write(JOB_HISTORY[job_id])
+        else:
+            err_msg = f"job with id {job_id} not found"
+            self.set_status(404, reason=err_msg)
+            self.write({"message": err_msg})
 
     
     def delete(self, id):
