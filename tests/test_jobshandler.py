@@ -1,3 +1,5 @@
+from tests.test_jobdetailhandler import EXPECTED_KEYS
+import pytest
 import requests
 
 JOBSHANDLER_URL = "http://localhost:8888/jobs"
@@ -12,4 +14,7 @@ def test_jobs_content_type_is_json():
 
 def test_jobs_output_has_keys_running_scheduled_history():
     response = requests.get(JOBSHANDLER_URL)
-    assert response.json() == {'running': {}, 'scheduled': {}, 'history': {}}
+    ekeys = ["running", "scheduled", "history"]
+    for ekey in ekeys:
+        if ekey not in response.json().keys():
+            pytest.fail(f"{ekey} from {ekeys} not in {response.json().keys()}")
