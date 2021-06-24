@@ -1,4 +1,3 @@
-from tests.test_jobdetailhandler import EXPECTED_KEYS
 import pytest
 import requests
 
