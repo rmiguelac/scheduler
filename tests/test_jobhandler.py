@@ -6,6 +6,7 @@ import requests
 JOBDETAILSHANDLER_URL = 'http://localhost:8888/job'
 WRONG_JOB_ID = 'wrong'
 GOOD_DATA = {"job_name": "busybox", "time": "5m"}
+GOOD_ABSOLUTE_DATA = {"job_name": "busybox", "date": "26-06-2021 16:13:00"}
 BAD_DATA = {"jobname": "busybox", "time": "10m"}
 
 
@@ -34,7 +35,14 @@ def test_create_job_relative_time_sums_date_correctly():
     assert f"{int((datetime.strptime(scheduled_to, '%d-%m-%Y %H:%M:%S') - datetime.strptime(scheduled_in, '%d-%m-%Y %H:%M:%S')).seconds / 60)}m" == GOOD_DATA['time']
 
 def test_create_job_absolute_time_has_correct_date():
-    pass
+    new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_ABSOLUTE_DATA)
+    id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
+    response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
+    scheduled_to = response.json()['scheduled_to']
+    assert scheduled_to == GOOD_ABSOLUTE_DATA['date']
 
 def test_create_job_shows_status_scheduled_after_creation():
-    pass
+    new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_ABSOLUTE_DATA)
+    id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
+    response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
+    assert response.json()['status'] == "scheduled"
