@@ -46,3 +46,52 @@ def test_create_job_shows_status_scheduled_after_creation():
     id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
     response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
     assert response.json()['status'] == "scheduled"
+
+def test_delete_job_that_exists_returns_200():
+    pass
+
+def test_delete_job_that_does_not_exists_returns_404():
+    pass
+
+def test_delete_job_content_type_is_json():
+    pass
+
+def test_deleted_job_is_moved_to_history():
+    new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_ABSOLUTE_DATA)
+    id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
+    requests.delete(f"{JOBDETAILSHANDLER_URL}/{id}")
+    response = requests.get(f"{JOBDETAILSHANDLER_URL}s")
+    assert id in response.json()['history'].keys()
+
+def test_deleted_job_status_is_canceled():
+    new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_ABSOLUTE_DATA)
+    id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
+    requests.delete(f"{JOBDETAILSHANDLER_URL}/{id}")
+    response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
+    assert response.json()['status'] == 'canceled'
+
+def test_deleted_job_finish_status_is_did_not_run():
+    new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_ABSOLUTE_DATA)
+    id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
+    requests.delete(f"{JOBDETAILSHANDLER_URL}/{id}")
+    response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
+    assert response.json()['finish_status'] == 'did_not_run'
+
+def test_finished_job_has_finish_date_key():
+    new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_ABSOLUTE_DATA)
+    id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
+    requests.delete(f"{JOBDETAILSHANDLER_URL}/{id}")
+    response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
+    assert 'finish_date' in response.json().keys()
+
+def test_finished_job_has_correct_format_finish_date():
+    new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_ABSOLUTE_DATA)
+    id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
+    requests.delete(f"{JOBDETAILSHANDLER_URL}/{id}")
+    response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
+    try:
+        fmt = bool(datetime.strptime(response.json()['finish_date'], '%d-%m-%Y %H:%M:%S'))
+    except ValueError:
+        fmt = False
+
+    assert fmt == True
