@@ -6,6 +6,7 @@ import tornado
 
 from utils.utils import relative_date_to_timedelta
 from config import SCHEDULED_CALLBACKS, SCHEDULED_JOBS, RUNNING_JOBS, DATE_FORMAT, JOB_HISTORY
+from runner.docker import run_job
 
 async def schedule_job(job_name: str, scheduled_date: str, job_id: str, relative: bool):
     now = datetime.fromtimestamp(ttime())
@@ -29,6 +30,19 @@ async def schedule_job(job_name: str, scheduled_date: str, job_id: str, relative
 def runjob(job_name: str, job_id: str):
     delayed_args = partial(delayed, job_name, job_id)
     tornado.ioloop.IOLoop.instance().run_in_executor(None, delayed_args)
+
+def docker_job(job_name: str, job_id: str):
+    running_job = SCHEDULED_JOBS.pop(job_id)
+    RUNNING_JOBS[job_id] = running_job
+    RUNNING_JOBS[job_id]["status"] = "running"
+    run_job(image=job_name)
+    print(f"{job_name} ran...")
+    ran_job = RUNNING_JOBS.pop(job_id)
+    JOB_HISTORY[job_id] = ran_job
+    JOB_HISTORY[job_id]['finish_status'] = 'success'
+    JOB_HISTORY[job_id]['finish_date'] = datetime.fromtimestamp(ttime()).strftime(DATE_FORMAT)
+    JOB_HISTORY[job_id]['status'] = 'finished'
+
 
 def delayed(job_name: str, job_id: str):
     running_job = SCHEDULED_JOBS.pop(job_id)

@@ -71,6 +71,10 @@ function install_docker {
     sudo usermod -aG docker ${USER}
 }
 
+function install_app_requirements {
+    pip3 install -r requirements.txt
+}
+
 is_python_instaled
 check_python3_version
 if [[ ${NEED_TO_INSTALL_DOCKER} ]]; then
@@ -84,3 +88,5 @@ fi
 if [[ ${NEED_TO_INSTALL_PYTHON3_PIP} ]]; then
     install_python38
 fi
+
+pip3 install

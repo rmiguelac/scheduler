@@ -1,11 +1,8 @@
 import docker
 
-from docker.api.container import Container
-
-
 #TODO: Transfor into singleton to avoid opening a client multiple times
 #TODO: Make sure this runs async
-def run_job(image: str, command: dict = '') -> Container:
+def run_job(image: str, command: dict = '') :
     try:
         # We're assuming this api will be running in the server in which docker is running
         client = docker.DockerClient(base_url='unix://var/run/docker.sock')
