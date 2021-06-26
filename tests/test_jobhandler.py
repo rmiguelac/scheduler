@@ -48,13 +48,18 @@ def test_create_job_shows_status_scheduled_after_creation():
     assert response.json()['status'] == "scheduled"
 
 def test_delete_job_that_exists_returns_200():
-    pass
+    new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_ABSOLUTE_DATA)
+    id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
+    response = requests.delete(f"{JOBDETAILSHANDLER_URL}/{id}")
+    assert response.status_code == 200
 
 def test_delete_job_that_does_not_exists_returns_404():
-    pass
+    response = requests.delete(f"{JOBDETAILSHANDLER_URL}/wrong")
+    assert response.status_code == 404
 
 def test_delete_job_content_type_is_json():
-    pass
+    response = requests.delete(f"{JOBDETAILSHANDLER_URL}/wrong")
+    assert 'application/json' in response.headers['Content-Type']
 
 def test_deleted_job_is_moved_to_history():
     new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_ABSOLUTE_DATA)
