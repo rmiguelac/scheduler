@@ -67,7 +67,6 @@ class JobDetailHandler(tornado.web.RequestHandler):
             self.set_status(404, reason=err_msg)
             self.write({"message": err_msg})
 
-    
     def delete(self, id):
         if id in SCHEDULED_JOBS.keys():
             SCHEDULED_CALLBACKS[id].cancel()
