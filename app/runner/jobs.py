@@ -28,7 +28,7 @@ async def schedule_job(job_name: str, scheduled_date: str, job_id: str, relative
 
 
 def runjob(job_name: str, job_id: str):
-    delayed_args = partial(delayed, job_name, job_id)
+    delayed_args = partial(docker_job, job_name, job_id)
     tornado.ioloop.IOLoop.instance().run_in_executor(None, delayed_args)
 
 def docker_job(job_name: str, job_id: str):
