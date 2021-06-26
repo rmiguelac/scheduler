@@ -3,10 +3,12 @@ import re
 
 import requests
 
+from config import DATE_FORMAT
+
 JOBDETAILSHANDLER_URL = 'http://localhost:8888/job'
 WRONG_JOB_ID = 'wrong'
 GOOD_DATA = {"job_name": "busybox", "time": "5m"}
-BAD_DATA = {"jobname": "busybox", "time": "000m"}
+BAD_DATA = {"jobname": "busybox", "time": "10m"}
 
 
 def test_create_job_returns_200():
@@ -31,6 +33,7 @@ def test_create_job_relative_time_sums_date_correctly():
     response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
     scheduled_in = response.json()['scheduled_in']
     scheduled_to = response.json()['scheduled_to']
+    assert f"{int((datetime.strptime(scheduled_to, DATE_FORMAT) - datetime.strptime(scheduled_in, DATE_FORMAT)) / 60)}m" == GOOD_DATA['time']
 
 def test_create_job_absolute_time_has_correct_date():
     pass

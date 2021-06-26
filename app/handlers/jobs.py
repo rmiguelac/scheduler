@@ -7,7 +7,6 @@ import uuid
 
 from config import SCHEDULED_CALLBACKS, SCHEDULED_JOBS, RUNNING_JOBS, DATE_FORMAT, JOB_HISTORY
 from runner.jobs import schedule_job
-from utils.utils import relative_date_to_timedelta
 
 
 class JobsHandler(tornado.web.RequestHandler):
@@ -70,11 +69,17 @@ class JobDetailHandler(tornado.web.RequestHandler):
 
     
     def delete(self, id):
-        SCHEDULED_CALLBACKS[id].cancel()
-        SCHEDULED_CALLBACKS.pop(id)
-        deleted_job = SCHEDULED_JOBS.pop(id)
-        JOB_HISTORY[id] = deleted_job
-        JOB_HISTORY[id]['finish_status'] = 'did_not_run'
-        JOB_HISTORY[id]['finish_date'] = datetime.fromtimestamp(ttime()).strftime(DATE_FORMAT)
-        JOB_HISTORY[id]['status'] = 'canceled'
-        self.write({"message": f"job {id} was de-scheduled"})
+        if id in SCHEDULED_JOBS.keys():
+            SCHEDULED_CALLBACKS[id].cancel()
+            SCHEDULED_CALLBACKS.pop(id)
+            deleted_job = SCHEDULED_JOBS.pop(id)
+            JOB_HISTORY[id] = deleted_job
+            JOB_HISTORY[id]['finish_status'] = 'did_not_run'
+            JOB_HISTORY[id]['finish_date'] = datetime.fromtimestamp(ttime()).strftime(DATE_FORMAT)
+            JOB_HISTORY[id]['status'] = 'canceled'
+            self.write({"message": f"job {id} was de-scheduled"})
+        else:
+            err_msg = f"job with id {id} not found"
+            self.set_status(404, reason=err_msg)
+            self.write({"message": err_msg})
+

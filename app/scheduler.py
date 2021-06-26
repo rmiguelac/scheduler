@@ -13,4 +13,5 @@ if __name__ == "__main__":
         (r"/job/(.*)", JobDetailHandler),
     ], debug=True)
     application.listen(8888)
+    print("[INFO] Application started and port 8888 is listening")
     tornado.ioloop.IOLoop.current().start()
