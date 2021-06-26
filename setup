@@ -82,20 +82,17 @@ is_docker_installed
 
 if [[ ${NEED_TO_INSTALL_DOCKER} ]]; then
     # TODO: check if once installed, rerun wont do anything
-    echo "${NEED_TO_INSTALL_DOCKER}"
-    echo "install_docker"
+    install_docker
 fi
 
 if [[ ${NEED_TO_INSTALL_PYTHON3} ]]; then
     # TODO: check if once installed, rerun wont do anything
-    echo "${NEED_TO_INSTALL_PYTHON3}"
-    echo "install_python38"
+    install_python38
 fi
 
 if [[ ${NEED_TO_INSTALL_PYTHON3_PIP} ]]; then
     # TODO: check if once installed, rerun wont do anything
-    echo "${NEED_TO_INSTALL_PYTHON3_PIP}"
-    echo "install_python3_pip"
+    install_python3_pip
 fi
 
 install_app_requirements
