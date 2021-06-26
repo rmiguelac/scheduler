@@ -6,7 +6,7 @@ import requests
 JOBDETAILSHANDLER_URL = 'http://localhost:8888/job'
 WRONG_JOB_ID = 'wrong'
 GOOD_DATA = {"job_name": "busybox", "time": "5m"}
-GOOD_ABSOLUTE_DATA = {"job_name": "busybox", "date": "26-06-2021 16:13:00"}
+GOOD_ABSOLUTE_DATA = {"job_name": "busybox", "date": "27-06-2099 16:13:00"}
 BAD_DATA = {"jobname": "busybox", "time": "10m"}
 
 
