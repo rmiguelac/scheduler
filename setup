@@ -77,19 +77,23 @@ function install_app_requirements {
 
 is_python_instaled
 check_python3_version
+is_python3_pip_installed
+is_docker_installed
+
 if [[ ${NEED_TO_INSTALL_DOCKER} ]]; then
     # TODO: check if once installed, rerun wont do anything
-    install_docker
+    echo "${NEED_TO_INSTALL_DOCKER}"
+    echo "install_docker"
 fi
 
 if [[ ${NEED_TO_INSTALL_PYTHON3} ]]; then
     # TODO: check if once installed, rerun wont do anything
-    install_python38
+    echo "install_python38"
 fi
 
 if [[ ${NEED_TO_INSTALL_PYTHON3_PIP} ]]; then
     # TODO: check if once installed, rerun wont do anything
-    install_python38
+    echo "install_python38"
 fi
 
-pip3 install -r requirements.txt
+install_app_requirements
