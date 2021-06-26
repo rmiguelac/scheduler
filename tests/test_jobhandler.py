@@ -5,8 +5,8 @@ import requests
 
 JOBDETAILSHANDLER_URL = 'http://localhost:8888/job'
 WRONG_JOB_ID = 'wrong'
-GOOD_DATA = {"job_name": "GOOD_JOB", "time": "5m"}
-BAD_DATA = {"jobname": "BAD_JOB", "time": "000m"}
+GOOD_DATA = {"job_name": "busybox", "time": "5m"}
+BAD_DATA = {"jobname": "busybox", "time": "000m"}
 
 
 def test_create_job_returns_200():
@@ -15,7 +15,7 @@ def test_create_job_returns_200():
 
 def test_create_job_with_wrong_input_returns_400():
     data = {
-        "jobname": "CREATE_JOB_400",
+        "jobname": "busybox",
         "tim": "200m"
     }
     response = requests.post(f"{JOBDETAILSHANDLER_URL}", data=BAD_DATA)

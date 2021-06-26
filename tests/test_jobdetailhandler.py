@@ -20,7 +20,7 @@ def test_get_job_details_content_type_is_json():
 
 def test_get_job_details_existing_job_returns_200():
     data = {
-        "job_name": "SAMPLE_200_JOB",
+        "job_name": "busybox",
         "time": "200m"
     }
     new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=data)
@@ -30,7 +30,7 @@ def test_get_job_details_existing_job_returns_200():
 
 def test_get_job_details_existing_job_has_expected_keys():
     data = {
-        "job_name": "SAMPLE_KEYS_JOB",
+        "job_name": "busybox",
         "time": "100m"
     }
     new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=data)
@@ -56,7 +56,7 @@ def test_get_job_details_content_type_is_json():
 
 def test_get_job_details_existing_job_returns_200():
     data = {
-        "job_name": "SAMPLE_200_JOB",
+        "job_name": "busybox",
         "time": "200m"
     }
     new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=data)
@@ -66,7 +66,7 @@ def test_get_job_details_existing_job_returns_200():
 
 def test_get_job_details_existing_job_has_expected_keys():
     data = {
-        "job_name": "SAMPLE_KEYS_JOB",
+        "job_name": "busybox",
         "time": "100m"
     }
     new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=data)
