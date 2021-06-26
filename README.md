@@ -2,7 +2,7 @@
 
 **Scheduler** is a simple async API to schedule docker-based jobs.
 
-Scheduler allows the end-user to schedule jobs by its name at a relative or absolute time
+Scheduler allows the end-user to schedule jobs by its image at a relative or absolute time
 
 ## **Design Decisions**
 
@@ -14,6 +14,13 @@ Since we have jobs that can be in the running state or in scheduled state, as we
 
 ## **Installing**
 
+To install the app, run ```./setup```.  
+This will check if python in a version >= 3.8 is installed and if not, update/install it.  
+The same is valid for pip and docker.
+
+Taking into consideration that the latest vanilla ubuntu, at the date of this writing would be 20.04, some of its dependencies are already there. Nevertheless we're checking it.  
+
+Lastly, the required python packages are installed.
 
 ## **Using**
 Once the application is up and running, the following endpoints are exposed:
@@ -114,8 +121,47 @@ Once the application is up and running, the following endpoints are exposed:
 
 ## **Testing**
 
+To run the tests, first ensure the following:
 
-    
+- Application is up and running
+    - You can run it by either running python3 app/scheduler.py or by running the ./start script
+- docker is up and running in the same machine
+
+Running:
+```bash
+pytest -v
+```
+
+with output: 
+
+```
+[200~========================================================== test session starts ===========================================================
+platform linux -- Python 3.8.5, pytest-6.2.4, py-1.10.0, pluggy-0.13.1 -- /usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/rui/scheduler
+collected 17 items                                                                                                                       
+
+tests/test_jobdetailhandler.py::test_get_job_details_non_existing_job_returns_404 PASSED                                           [  5%]
+tests/test_jobdetailhandler.py::test_get_job_details_from_non_existing_job_returns_expected_message PASSED                         [ 11%]
+tests/test_jobdetailhandler.py::test_get_job_details_content_type_is_json PASSED                                                   [ 17%]
+tests/test_jobdetailhandler.py::test_get_job_details_existing_job_returns_200 PASSED                                               [ 23%]
+tests/test_jobdetailhandler.py::test_get_job_details_existing_job_has_expected_keys PASSED                                         [ 29%]
+tests/test_jobhandler.py::test_create_job_returns_200 PASSED                                                                       [ 35%]
+tests/test_jobhandler.py::test_create_job_with_wrong_input_returns_400 PASSED                                                      [ 41%]
+tests/test_jobhandler.py::test_create_job_content_type_is_json PASSED                                                              [ 47%]
+tests/test_jobhandler.py::test_create_job_relative_time_sums_date_correctly PASSED                                                 [ 52%]
+tests/test_jobhandler.py::test_create_job_absolute_time_has_correct_date PASSED                                                    [ 58%]
+tests/test_jobhandler.py::test_create_job_shows_status_scheduled_after_creation PASSED                                             [ 64%]
+tests/test_jobshandler.py::test_jobs_handler_status_code_is_200 PASSED                                                             [ 70%]
+tests/test_jobshandler.py::test_jobs_content_type_is_json PASSED                                                                   [ 76%]
+tests/test_jobshandler.py::test_jobs_output_has_keys_running_scheduled_history PASSED                                              [ 82%]
+tests/test_mainhandler.py::test_get_mainhandler_status_code_200 PASSED                                                             [ 88%]
+tests/test_mainhandler.py::test_get_mainhandler_content_type_is_json PASSED                                                        [ 94%]
+tests/test_mainhandler.py::test_get_mainhandler_redirect_to_jobs PASSED                                                            [100%]
+
+=========================================================== 17 passed in 0.15s ===========================================================
+```
+
 ## **Tech-stack**
 
 - [Tornado](https://www.tornadoweb.org/en/stable/)
