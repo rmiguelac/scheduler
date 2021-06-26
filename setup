@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+export NEED_TO_INSTALL_PYTHON3=false
+export NEED_TO_INSTALL_DOCKER=false
+export NEED_TO_UPGRADE_PYTHON_TO_38=false
+
+# Check if python3 is installed
+function is_python_instaled {
+    PYTHON3_PATH=$(which python3)
+    if [[ $? -eq 0 ]]; then
+        echo "[INFO] Python3 is installed. Avilable at ${PYTHON3_PATH}"
+    else
+        NEED_TO_INSTALL_PYTHON3=true
+    fi
+}
+
+function check_python3_version {
+    PYTHON3_VERSION=$(python3 --version | cut -d' ' -f2)
+    echo "[INFO] Python3 version is ${PYTHON3_VERSION}"
+    if [[ "${PYTHON3_VERSION}" == *"3.8"* ]]; then
+        echo "[INFO] Python3 version is in range 3.8, good to go."
+    elif [[ "${PYTHON3_VERSION}" == *"3.9"* ]]; then
+        echo "[INFO] Python3 version is in range 3.9, good to go."
+    else 
+        echo "[WARNING] Will install python3.8 as current version is not expected."
+        NEED_TO_UPGRADE_PYTHON_TO_38=true
+    fi
+}
+
+function install_python38 {
+    echo "[INFO] Attempting to install python3.8. If required, please provide password for sudo"
+    sudo apt install -y python3.8
+    check_python3_version
+}
+
+function is_docker_installed {
+    DOCKER_PATH=$(which docker)
+    if [[ $? -eq 0 ]]; then
+        echo "[INFO] Docker is installed. Avilable at ${DOCKER_PATH}"
+    else
+        NEED_TO_INSTALL_DOCKER=true
+    fi
+}
+
+function install_docker {
+    echo "[INFO] Attempting to install docker ce. If required, please provide password for sudo."
+    sudo apt update -y
+    sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+    sudo apt update
+    apt-cache policy docker-ce
+    sudo apt install -y docker-ce
+    sudo systemctl enable docker --now
+    sudo usermod -aG docker ${USER}
+}
+
+is_python_instaled
+check_python3_version
+if [[ ! ${NEED_TO_INSTALL_DOCKER} ]]; then
+    install_docker
+fi
+
+if [[ ! ${NEED_TO_INSTALL_PYTHON3} ]]; then
+    install_python38
+fi
