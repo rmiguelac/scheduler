@@ -8,8 +8,6 @@ contextlib2==0.6.0
 distlib==0.3.0
 distro==1.4.0
 docker==5.0.0
-docker-py==1.10.6
-docker-pycreds==0.4.0
 html5lib==1.0.1
 idna==2.8
 iniconfig==1.1.1
