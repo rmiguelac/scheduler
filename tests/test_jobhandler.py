@@ -31,7 +31,7 @@ def test_create_job_relative_time_sums_date_correctly():
     response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
     scheduled_in = response.json()['scheduled_in']
     scheduled_to = response.json()['scheduled_to']
-    assert f"{int((datetime.strptime(scheduled_to, '%d-%m-%Y %H:%M:%S') - datetime.strptime(scheduled_in, '%d-%m-%Y %H:%M:%S')) / 60)}m" == GOOD_DATA['time']
+    assert f"{int((datetime.strptime(scheduled_to, '%d-%m-%Y %H:%M:%S') - datetime.strptime(scheduled_in, '%d-%m-%Y %H:%M:%S')).seconds / 60)}m" == GOOD_DATA['time']
 
 def test_create_job_absolute_time_has_correct_date():
     pass
