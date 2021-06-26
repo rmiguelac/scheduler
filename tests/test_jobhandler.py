@@ -29,7 +29,7 @@ def test_create_job_relative_time_sums_date_correctly():
     new_job = requests.post(f"{JOBDETAILSHANDLER_URL}", data=GOOD_DATA)
     id = re.search('(?<=id ).*(?= will)', new_job.json()['message']).group()
     response = requests.get(f"{JOBDETAILSHANDLER_URL}/{id}")
-    scheduled_on = response.json()['scheduled_on']
+    scheduled_in = response.json()['scheduled_in']
     scheduled_to = response.json()['scheduled_to']
 
 def test_create_job_absolute_time_has_correct_date():
