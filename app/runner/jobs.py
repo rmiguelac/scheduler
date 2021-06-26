@@ -6,7 +6,7 @@ import tornado
 
 from utils.utils import relative_date_to_timedelta
 from config import SCHEDULED_CALLBACKS, SCHEDULED_JOBS, RUNNING_JOBS, DATE_FORMAT, JOB_HISTORY
-from runner.docker import run_job
+from runner.docker_job import run_job
 
 async def schedule_job(job_name: str, scheduled_date: str, job_id: str, relative: bool):
     now = datetime.fromtimestamp(ttime())
